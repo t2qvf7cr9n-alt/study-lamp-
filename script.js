@@ -127,3 +127,83 @@ async function sendToLamp(message) {
 }
 
 document.getElementById("connectLampBtn").onclick = connectLamp;
+
+/* ===========================================================
+   PHONE DETECTION MODEL (Teachable Machine)
+   =========================================================== */
+
+// IMPORTANT: these paths must match your GitHub folder names EXACTLY
+const modelURL = "hand tracking model/my_model/model.json";
+const metadataURL = "hand tracking model/my_model/metadata.json";
+
+// Global model + webcam objects
+let tmModel, maxPredictions, webcam;
+
+async function initPhoneDetection() {
+    try {
+        // Load Teachable Machine model
+        tmModel = await tmImage.load(modelURL, metadataURL);
+        maxPredictions = tmModel.getTotalClasses();
+        console.log("Model loaded:", maxPredictions, "classes");
+
+        // Setup webcam
+        const flip = true;
+        webcam = new tmImage.Webcam(300, 300, flip);
+        await webcam.setup();
+        await webcam.play();
+
+        // Display webcam in HTML <video>
+        document.getElementById("webcam").srcObject = webcam.webcam;
+
+        // Start detection loop
+        window.requestAnimationFrame(detectionLoop);
+
+        document.getElementById("trackingStatus").textContent = "Tracking active";
+    } catch (err) {
+        console.error("Model loading/tracking failed:", err);
+        document.getElementById("trackingStatus").textContent = "Tracking error";
+    }
+}
+
+async function detectionLoop() {
+    webcam.update();
+    await predictPhonePresence();
+    window.requestAnimationFrame(detectionLoop);
+}
+
+async function predictPhonePresence() {
+    if (!tmModel) return;
+
+    const predictions = await tmModel.predict(webcam.canvas);
+
+    // According to metadata:
+    // Class 0: "Holding Phone"
+    // Class 1: "Not holding phone"
+    const holdingP
+
+async function predictPhonePresence() {
+    if (!tmModel) return;
+
+    const predictions = await tmModel.predict(webcam.canvas);
+
+    // According to metadata:
+    // Class 0: "Holding Phone"
+    // Class 1: "Not holding phone"
+    const holdingPhoneProb = predictions[0].probability;
+    const notHoldingProb = predictions[1].probability;
+
+    const textBox = document.getElementById("predictionText");
+
+    if (holdingPhoneProb > 0.85) {
+        textBox.textContent = "📱 Phone detected!";
+        setDistracted(true);
+    } else {
+        textBox.textContent = "✔ No phone detected";
+        setDistracted(false);
+    }
+}
+
+// Start tracking once page is loaded
+window.addEventListener("DOMContentLoaded", () => {
+    initPhoneDetection();
+});
