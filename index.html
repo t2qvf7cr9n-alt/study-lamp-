@@ -5,10 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Study Lamp</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.7.4"></script>
+<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8.4-alpha2"></script>
+
 </head>
 
 <body>
 
+<section id="cameraSection">
+    <h2>Phone Detection</h2>
+    <video id="webcam" autoplay playsinline width="300" height="300"></video>
+    <p id="predictionText">Loading model...</p>
+</section>
+    
 <header>
     <h1>Smart Study Lamp</h1>
     <button id="connectLampBtn">Connect Lamp</button>
