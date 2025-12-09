@@ -135,8 +135,9 @@ document.getElementById("connectLampBtn").onclick = connectLamp;
 // ===========================================================
 // PHONE DETECTION MODEL (Teachable Machine)
 // ===========================================================
-const modelURL = "hand_tracking_model/my_model/model.json";
-const metadataURL = "hand_tracking_model/my_model/metadata.json";
+const modelURL = "./hand_tracking_model/my_model/model.json";
+const metadataURL = "./hand_tracking_model/my_model/metadata.json";
+
 
 let tmModel, webcam;
 
