@@ -3,16 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task Progress Tracker</title>
+    <title>Smart Study Lamp</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-    <h1>Task Progress Tracker</h1>
+<header>
+    <h1>Smart Study Lamp</h1>
+    <button id="connectLampBtn">Connect Lamp</button>
+    <span id="lampStatus">Not connected</span>
+</header>
 
+<section id="taskSection">
     <div class="input-container">
         <input type="text" id="taskInput" placeholder="Add a new task...">
-        <button id="addTaskBtn">Add Task</button>
+        <button id="addTaskBtn">Add</button>
     </div>
 
     <ul id="taskList"></ul>
@@ -20,7 +26,22 @@
     <div id="progressBar">
         <div id="progressBarFill">0%</div>
     </div>
+</section>
 
-    <script src="script.js"></script>
+<section id="lampSimSection">
+    <h2>Virtual Lamp</h2>
+    <div id="lampSim">
+        <div id="lampFill"></div>
+    </div>
+</section>
+
+<!-- Debug buttons for your teammate (remove later) -->
+<section id="debug">
+    <h3>Debug / Eye Tracking Simulation</h3>
+    <button onclick="setDistracted(true)">Simulate Distracted</button>
+    <button onclick="setDistracted(false)">Simulate Focused</button>
+</section>
+
+<script src="script.js"></script>
 </body>
 </html>
