@@ -6,34 +6,42 @@
     <title>Smart Study Lamp</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<nav class="nav">
-    <div class="logo">StudyLamp</div>
+<header>
+    <h1>Smart Study Lamp</h1>
+    <button id="connectLampBtn">Connect Lamp</button>
+    <span id="lampStatus">Not connected</span>
+</header>
 
-    <div class="nav-controls">
-        <button id="connectLampBtn" class="nav-btn">Connect Lamp</button>
-        <button id="startCameraBtn" class="nav-btn">Enable Camera</button>
-    </div>
-</nav>
-
-<section class="main-grid">
-
-    <!-- LEFT: Tasks -->
-    <div class="card">
-        <h2>Tasks</h2>
-
-        <div class="input-row">
-            <input type="text" id="taskInput" placeholder="Add a new task...">
-            <button id="addTaskBtn" class="green-btn">Add</button>
-        </div>
-
-        <ul id="taskList"></ul>
-
-        <div id="progressBar">
-            <div id="progressBarFill">0%</div>
-        </div>
+<section id="taskSection">
+    <div class="input-container">
+        <input type="text" id="taskInput" placeholder="Add a new task...">
+        <button id="addTaskBtn">Add</button>
     </div>
 
-    <!-- RIGHT: Lamp + Distraction -->
-    <div class="card">
+    <ul id="taskList"></ul>
+
+    <div id="progressBar">
+        <div id="progressBarFill">0%</div>
+    </div>
+</section>
+
+<section id="lampSimSection">
+    <h2>Virtual Lamp</h2>
+    <div id="lampSim">
+        <div id="lampFill"></div>
+    </div>
+</section>
+
+<!-- Debug buttons for your teammate (remove later) -->
+<section id="debug">
+    <h3>Debug / Eye Tracking Simulation</h3>
+    <button onclick="setDistracted(true)">Simulate Distracted</button>
+    <button onclick="setDistracted(false)">Simulate Focused</button>
+</section>
+
+<script src="script.js"></script>
+</body>
+</html>
