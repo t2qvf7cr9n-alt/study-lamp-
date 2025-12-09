@@ -1,7 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Study Lamp</title>
+    <link rel="stylesheet" href="style.css">
+</head>
 <body>
 
 <nav class="nav">
     <div class="logo">StudyLamp</div>
+
     <div class="nav-controls">
         <button id="connectLampBtn" class="nav-btn">Connect Lamp</button>
         <button id="startCameraBtn" class="nav-btn">Enable Camera</button>
@@ -10,8 +19,8 @@
 
 <section class="main-grid">
 
-    <!-- LEFT COLUMN: Tasks + Progress -->
-    <div class="card large">
+    <!-- LEFT: Tasks -->
+    <div class="card">
         <h2>Tasks</h2>
 
         <div class="input-row">
@@ -22,9 +31,9 @@
         <ul id="taskList"></ul>
 
         <div id="progressBar">
-            <div id="progressBarFill">0%</</div>
+            <div id="progressBarFill">0%</div>
         </div>
     </div>
 
-    <!-- RIGHT COLUMN: Lamp + Distracted Mode + Camera -->
-    <
+    <!-- RIGHT: Lamp + Distraction -->
+    <div class="card">
