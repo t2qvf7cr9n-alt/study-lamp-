@@ -1,15 +1,19 @@
 <body>
 
-<div class="container">
+<nav class="nav">
+    <div class="logo">StudyLamp</div>
+    <div class="nav-controls">
+        <button id="connectLampBtn" class="nav-btn">Connect Lamp</button>
+        <button id="startCameraBtn" class="nav-btn">Enable Camera</button>
+    </div>
+</nav>
 
-    <header>
-        <h1>Smart Study Lamp</h1>
-        <button id="connectLampBtn" class="apple-btn">Connect Lamp</button>
-        <span id="lampStatus">Not connected</span>
-    </header>
+<section class="main-grid">
 
-    <section class="card">
+    <!-- LEFT COLUMN: Tasks + Progress -->
+    <div class="card large">
         <h2>Tasks</h2>
+
         <div class="input-row">
             <input type="text" id="taskInput" placeholder="Add a new task...">
             <button id="addTaskBtn" class="green-btn">Add</button>
@@ -18,18 +22,9 @@
         <ul id="taskList"></ul>
 
         <div id="progressBar">
-            <div id="progressBarFill">0%</div>
+            <div id="progressBarFill">0%</</div>
         </div>
-    </section>
+    </div>
 
-    <section class="card">
-        <h2>Virtual Lamp</h2>
-        <div id="lampSim">
-            <div id="lampFill"></div>
-        </div>
-    </section>
-
-</div>
-
-<script src="script.js"></script>
-</body>
+    <!-- RIGHT COLUMN: Lamp + Distracted Mode + Camera -->
+    <
