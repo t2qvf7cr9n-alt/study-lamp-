@@ -1,145 +1,129 @@
-/* ---------- GLOBAL ---------- */
-
 body {
-    font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-    background: #f5f5f7;
+    font-family: 'Inter', sans-serif;
+    background: #f2f2f7;
     margin: 0;
-    color: #1d1d1f;
+    padding: 20px;
+    color: #333;
 }
 
-/* ---------- NAVBAR ---------- */
-
-.nav {
+header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 18px 40px;
-    background: #ffffff;
-    border-bottom: 1px solid #e7e7e9;
+    margin-bottom: 25px;
 }
 
-.logo {
-    font-size: 22px;
-    font-weight: 600;
-}
-
-.nav-controls {
-    display: flex;
-    gap: 10px;
-}
-
-.nav-btn {
-    padding: 10px 16px;
-    border-radius: 10px;
-    border: 1px solid #d0d0d5;
-    background: white;
+#connectLampBtn {
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: none;
+    background: #007aff;
+    color: white;
     cursor: pointer;
     font-size: 14px;
 }
 
-/* ---------- LAYOUT GRID ---------- */
-
-.main-grid {
-    display: grid;
-    grid-template-columns: 1fr 360px;
-    gap: 30px;
-    padding: 40px;
+#taskSection, #lampSimSection {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    margin-bottom: 25px;
 }
 
-/* ---------- CARDS ---------- */
-
-.card {
-    background: #ffffff;
-    padding: 28px;
-    border-radius: 20px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-}
-
-.card h2 {
-    margin-top: 0;
-    margin-bottom: 20px;
-    font-size: 22px;
-    font-weight: 600;
-}
-
-.subheading {
-    margin-top: 25px;
-    font-size: 18px;
-    font-weight: 500;
-}
-
-/* ---------- INPUTS ---------- */
-
-.input-row {
+.input-container {
     display: flex;
     gap: 10px;
-    margin-bottom: 20px;
 }
 
-input[type="text"] {
+#taskInput {
     flex: 1;
-    padding: 14px 16px;
-    border-radius: 12px;
-    border: 1px solid #dcdce2;
-    font-size: 15px;
-    background: #fafafa;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
 }
 
-/* ---------- BUTTONS ---------- */
-
-.green-btn {
+#addTaskBtn {
+    padding: 12px 20px;
+    border-radius: 8px;
     background: #34c759;
     color: white;
     border: none;
-    padding: 14px 20px;
-    border-radius: 12px;
     cursor: pointer;
 }
-
-.red-btn {
-    background: #ff3b30;
-    color: white;
-    border: none;
-    padding: 10px 16px;
-    border-radius: 12px;
-    cursor: pointer;
-}
-
-.outline-btn {
-    padding: 10px 16px;
-    border-radius: 12px;
-    border: 1px solid #cccccc;
-    background: white;
-    cursor: pointer;
-}
-
-.button-row {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-/* ---------- TASK LIST ---------- */
 
 #taskList {
     list-style: none;
     padding: 0;
+    margin-top: 15px;
 }
 
 .task-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #f7f7fa;
-    padding: 14px;
-    margin-bottom: 10px;
-    border-radius: 14px;
+    padding: 10px 12px;
+    background: #fafafa;
+    margin-bottom: 8px;
+    border-radius: 8px;
 }
 
 .delete-btn {
-    padding: 6px 10px;
-    border-radius: 8px;
     background: #ff3b30;
     border: none;
     color: white;
-    cursor: pointe
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/* Progress Bar */
+
+#progressBar {
+    width: 100%;
+    height: 26px;
+    background: #ddd;
+    border-radius: 12px;
+    margin-top: 20px;
+    overflow: hidden;
+}
+
+#progressBarFill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #34c759, #30d158);
+    color: white;
+    text-align: center;
+    line-height: 26px;
+    transition: width 0.4s ease;
+}
+
+/* Lamp Simulation */
+
+#lampSim {
+    width: 80px;
+    height: 200px;
+    margin: 20px auto;
+    border-radius: 40px;
+    background: #e0e0e0;
+    position: relative;
+    overflow: hidden;
+}
+
+#lampFill {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 0%;
+    background: #30d158;
+    transition: height 0.4s ease;
+}
+
+/* Distraction Mode UI */
+
+body.distracted {
+    background: #ffe8e8;
+}
+body.distracted h1 {
+    color: #ff3b30;
+}
