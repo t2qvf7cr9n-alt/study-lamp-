@@ -1,60 +1,129 @@
-const taskInput = document.getElementById('taskInput');
-const addTaskBtn = document.getElementById('addTaskBtn');
-const taskList = document.getElementById('taskList');
-const progressBarFill = document.getElementById('progressBarFill');
-
-let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-
-function saveTasks() {
-    localStorage.setItem('tasks', JSON.stringify(tasks));
+body {
+    font-family: 'Inter', sans-serif;
+    background: #f2f2f7;
+    margin: 0;
+    padding: 20px;
+    color: #333;
 }
 
-function updateProgress() {
-    if (tasks.length === 0) {
-        progressBarFill.style.width = '0%';
-        progressBarFill.textContent = '0%';
-        return;
-    }
-    const completed = tasks.filter(t => t.completed).length;
-    const percent = Math.round((completed / tasks.length) * 100);
-    progressBarFill.style.width = percent + '%';
-    progressBarFill.textContent = percent + '%';
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
 }
 
-function renderTasks() {
-    taskList.innerHTML = '';
-    tasks.forEach((task, index) => {
-        const li = document.createElement('li');
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.checked = task.completed;
-        checkbox.addEventListener('change', () => {
-            tasks[index].completed = checkbox.checked;
-            saveTasks();
-            updateProgress();
-        });
-
-        const span = document.createElement('span');
-        span.textContent = task.name;
-
-        li.appendChild(checkbox);
-        li.appendChild(span);
-        taskList.appendChild(li);
-    });
-    updateProgress();
+#connectLampBtn {
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: none;
+    background: #007aff;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
 }
 
-addTaskBtn.addEventListener('click', () => {
-    const taskName = taskInput.value.trim();
-    if (taskName === '') return;
-    tasks.push({ name: taskName, completed: false });
-    taskInput.value = '';
-    saveTasks();
-    renderTasks();
-});
+#taskSection, #lampSimSection {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    margin-bottom: 25px;
+}
 
-taskInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') addTaskBtn.click();
-});
+.input-container {
+    display: flex;
+    gap: 10px;
+}
 
-renderTasks();
+#taskInput {
+    flex: 1;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+#addTaskBtn {
+    padding: 12px 20px;
+    border-radius: 8px;
+    background: #34c759;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+#taskList {
+    list-style: none;
+    padding: 0;
+    margin-top: 15px;
+}
+
+.task-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    background: #fafafa;
+    margin-bottom: 8px;
+    border-radius: 8px;
+}
+
+.delete-btn {
+    background: #ff3b30;
+    border: none;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/* Progress Bar */
+
+#progressBar {
+    width: 100%;
+    height: 26px;
+    background: #ddd;
+    border-radius: 12px;
+    margin-top: 20px;
+    overflow: hidden;
+}
+
+#progressBarFill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #34c759, #30d158);
+    color: white;
+    text-align: center;
+    line-height: 26px;
+    transition: width 0.4s ease;
+}
+
+/* Lamp Simulation */
+
+#lampSim {
+    width: 80px;
+    height: 200px;
+    margin: 20px auto;
+    border-radius: 40px;
+    background: #e0e0e0;
+    position: relative;
+    overflow: hidden;
+}
+
+#lampFill {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 0%;
+    background: #30d158;
+    transition: height 0.4s ease;
+}
+
+/* Distraction Mode UI */
+
+body.distracted {
+    background: #ffe8e8;
+}
+body.distracted h1 {
+    color: #ff3b30;
+}
