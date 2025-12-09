@@ -42,6 +42,8 @@ function renderTasks() {
         li.className = "task-item";
 
         const leftSide = document.createElement("div");
+        leftSide.className = "task-left";
+
         const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
         checkbox.checked = task.completed;
@@ -55,41 +57,106 @@ function renderTasks() {
         span.textContent = task.name;
 
         leftSide.appendChild(checkbox);
-        leftSide.appendChil
+        leftSide.appendChild(span);
 
-/* ===========================================================
-   PHONE DETECTION MODEL (Teachable Machine)
-   =========================================================== */
+        const deleteBtn = document.createElement("button");
+        deleteBtn.className = "delete-btn";
+        deleteBtn.textContent = "Delete";
 
-// Correct file paths based on your GitHub folder:
+        deleteBtn.addEventListener("click", () => {
+            tasks.splice(index, 1);
+            renderTasks();
+        });
+
+        li.appendChild(leftSide);
+        li.appendChild(deleteBtn);
+        taskList.appendChild(li);
+    });
+
+    updateProgress();
+}
+
+addTaskBtn.addEventListener("click", () => {
+    const text = taskInput.value.trim();
+    if (text === "") return;
+    tasks.push({ name: text, completed: false });
+    taskInput.value = "";
+    renderTasks();
+});
+
+taskInput.addEventListener("keypress", e => {
+    if (e.key === "Enter") addTaskBtn.click();
+});
+
+renderTasks();
+
+
+// =====================================================
+// DISTRACTION HOOK
+// =====================================================
+function setDistracted(isDistracted) {
+    currentAlert = isDistracted;
+
+    if (isDistracted) {
+        document.body.classList.add("distracted");
+        lampFill.style.background = "#ff3b30";
+        sendToLamp("A1");
+    } else {
+        document.body.classList.remove("distracted");
+        lampFill.style.background = "#30d158";
+        sendToLamp("A0");
+    }
+}
+
+
+// =====================================================
+// LAMP USB SERIAL CONNECTION
+// =====================================================
+async function connectLamp() {
+    try {
+        port = await navigator.serial.requestPort();
+        await port.open({ baudRate: 9600 });
+        writer = port.writable.getWriter();
+
+        document.getElementById("lampStatus").textContent = "Connected";
+    } catch (err) {
+        console.error("Lamp connection failed:", err);
+    }
+}
+
+async function sendToLamp(message) {
+    if (!writer) return;
+    await writer.write(new TextEncoder().encode(message + "\n"));
+}
+
+document.getElementById("connectLampBtn").onclick = connectLamp;
+
+
+// ===========================================================
+// PHONE DETECTION MODEL (Teachable Machine)
+// ===========================================================
 const modelURL = "hand_tracking_model/my_model/model.json";
 const metadataURL = "hand_tracking_model/my_model/metadata.json";
 
 let tmModel, webcam;
 
-// Start the phone detection system
 async function initPhoneDetection() {
     try {
-        // Load Teachable Machine model
         tmModel = await tmImage.load(modelURL, metadataURL);
         console.log("Model loaded!");
 
-        // Update status text
         document.getElementById("trackingStatus").textContent = "Tracking active";
 
-        // Setup webcam
         webcam = new tmImage.Webcam(300, 300, true);
-        await webcam.setup(); 
+        await webcam.setup();
         await webcam.play();
 
-        // Display webcam feed inside your <video> tag
         document.getElementById("webcam").srcObject = webcam.webcam;
 
-        // Begin prediction loop
         window.requestAnimationFrame(detectionLoop);
 
     } catch (err) {
-        console.error("Error loading model:", err);
+        console.error("Model failed to load:", err);
         document.getElementById("trackingStatus").textContent = "Model failed to load";
     }
 }
@@ -103,14 +170,11 @@ async function detectionLoop() {
 async function predictPhonePresence() {
     if (!tmModel) return;
 
-    // Run prediction on webcam feed
     const predictions = await tmModel.predict(webcam.canvas);
-
-    // Class definitions from your training
     const holdingPhoneProb = predictions[0].probability;
+
     const textBox = document.getElementById("predictionText");
 
-    // Trigger distraction state
     if (holdingPhoneProb > 0.85) {
         textBox.textContent = "📱 Phone detected!";
         setDistracted(true);
@@ -120,5 +184,4 @@ async function predictPhonePresence() {
     }
 }
 
-// Start tracking system when page is ready
 window.addEventListener("DOMContentLoaded", initPhoneDetection);
