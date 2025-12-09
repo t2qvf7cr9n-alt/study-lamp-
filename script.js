@@ -56,3 +56,69 @@ function renderTasks() {
 
         leftSide.appendChild(checkbox);
         leftSide.appendChil
+
+/* ===========================================================
+   PHONE DETECTION MODEL (Teachable Machine)
+   =========================================================== */
+
+// Correct file paths based on your GitHub folder:
+const modelURL = "hand_tracking_model/my_model/model.json";
+const metadataURL = "hand_tracking_model/my_model/metadata.json";
+
+let tmModel, webcam;
+
+// Start the phone detection system
+async function initPhoneDetection() {
+    try {
+        // Load Teachable Machine model
+        tmModel = await tmImage.load(modelURL, metadataURL);
+        console.log("Model loaded!");
+
+        // Update status text
+        document.getElementById("trackingStatus").textContent = "Tracking active";
+
+        // Setup webcam
+        webcam = new tmImage.Webcam(300, 300, true);
+        await webcam.setup(); 
+        await webcam.play();
+
+        // Display webcam feed inside your <video> tag
+        document.getElementById("webcam").srcObject = webcam.webcam;
+
+        // Begin prediction loop
+        window.requestAnimationFrame(detectionLoop);
+
+    } catch (err) {
+        console.error("Error loading model:", err);
+        document.getElementById("trackingStatus").textContent = "Model failed to load";
+    }
+}
+
+async function detectionLoop() {
+    webcam.update();
+    await predictPhonePresence();
+    window.requestAnimationFrame(detectionLoop);
+}
+
+async function predictPhonePresence() {
+    if (!tmModel) return;
+
+    // Run prediction on webcam feed
+    const predictions = await tmModel.predict(webcam.canvas);
+
+    // Class definitions from your training
+    const holdingPhoneProb = predictions[0].probability;
+    const textBox = document.getElementById("predictionText");
+
+    // Trigger distraction state
+    if (holdingPhoneProb > 0.85) {
+        textBox.textContent = "📱 Phone detected!";
+        setDistracted(true);
+    } else {
+        textBox.textContent = "✔ No phone detected";
+        setDistracted(false);
+    }
+}
+
+// Start tracking system when page is ready
+window.addEventListener("DOMContentLoaded", initPhoneDetection);
