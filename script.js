@@ -105,65 +105,6 @@ function setDistracted(isDistracted) {
     }
 }
 
-/****************************************************
- * PHONE DETECTION PLACEHOLDER (MODEL GOES HERE)
- * --------------------------------------------------
- * This section sets up the webcam and a detection loop.
- * Your teammate will later insert their ML model into
- * the "runDetection()" function.
- ****************************************************/
-
-// Create a video element for webcam feed
-const phoneCam = document.createElement("video");
-phoneCam.setAttribute("autoplay", true);
-phoneCam.setAttribute("playsinline", true);  // important for some browsers
-phoneCam.style.display = "none";             // hide the video element
-document.body.appendChild(phoneCam);
-
-// Start webcam stream
-async function startWebcamFeed() {
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        phoneCam.srcObject = stream;
-        console.log("Webcam started for phone detection.");
-    } catch (err) {
-        console.error("Error starting webcam:", err);
-    }
-}
-
-// Placeholder: this function will be replaced by the REAL model code
-async function runDetection() {
-    /*******************************************
-     * THIS IS WHERE THE PHONE MODEL GOES LATER
-     *
-     * Example for teammate to fill in:
-     * const predictions = await model.detect(phoneCam);
-     * let phoneFound = predictions.some(p => p.class === "cell phone");
-     *******************************************/
-    
-    // 🔥 TEMP LOGIC (always false until model is added)
-    let phoneFound = false;
-
-    // Call your existing distraction function
-    if (phoneFound) {
-        setDistracted(true);
-    } else {
-        setDistracted(false);
-    }
-
-    // Loop again on next video frame
-    requestAnimationFrame(runDetection);
-}
-
-// Start everything
-async function startPhoneDetection() {
-    await startWebcamFeed();   // start webcam first
-    runDetection();            // then start calling detection every frame
-}
-
-startPhoneDetection();
-
-
 // ---------------------------
 // LAMP CONNECTION (USB Serial)
 // ---------------------------
