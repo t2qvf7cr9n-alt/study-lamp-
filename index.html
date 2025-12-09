@@ -1,156 +1,35 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<title>Phone Detection</title>
-
-<!-- TensorFlow.js + COCO-SSD -->
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0/dist/tf.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
-
-<style>
-    /* -----------------------------
-       Apple-Style Minimal UI
-    ------------------------------*/
-    body {
-        margin: 0;
-        padding: 0;
-        font-family: -apple-system, BlinkMacSystemFont, "Inter", "SF Pro Display", Arial, sans-serif;
-        background: linear-gradient(180deg, #f5f5f7, #e5e5ea);
-        color: #1c1c1e;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        flex-direction: column;
-    }
-
-    h1 {
-        font-weight: 600;
-        font-size: 2rem;
-        letter-spacing: -0.5px;
-        margin-bottom: 25px;
-        color: #000;
-    }
-
-    .camera-wrapper {
-        position: relative;
-        width: 720px;
-        height: 540px;
-        border-radius: 22px;
-        overflow: hidden;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-        background: #000;
-    }
-
-    video, canvas {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        left: 0;
-        top: 0;
-        object-fit: cover;
-    }
-
-    #status {
-        margin-top: 30px;
-        font-size: 1.1rem;
-        font-weight: 500;
-        color: #333;
-        opacity: 0.9;
-        letter-spacing: -0.2px;
-        transition: 0.25s ease;
-    }
-
-    .detected {
-        color: #e53935;
-        font-weight: 600;
-    }
-
-    .loading {
-        opacity: 0.6;
-    }
-</style>
-</head>
 <body>
 
-<h1>Phone Detection</h1>
+<div class="container">
 
-<div class="camera-wrapper">
-    <video id="cam" autoplay playsinline></video>
-    <canvas id="overlay"></canvas>
+    <header>
+        <h1>Smart Study Lamp</h1>
+        <button id="connectLampBtn" class="apple-btn">Connect Lamp</button>
+        <span id="lampStatus">Not connected</span>
+    </header>
+
+    <section class="card">
+        <h2>Tasks</h2>
+        <div class="input-row">
+            <input type="text" id="taskInput" placeholder="Add a new task...">
+            <button id="addTaskBtn" class="green-btn">Add</button>
+        </div>
+
+        <ul id="taskList"></ul>
+
+        <div id="progressBar">
+            <div id="progressBarFill">0%</div>
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>Virtual Lamp</h2>
+        <div id="lampSim">
+            <div id="lampFill"></div>
+        </div>
+    </section>
+
 </div>
 
-<div id="status" class="loading">Loading...</div>
-
-
-<script>
-async function startPhoneDetection() {
-    const video = document.getElementById("cam");
-    const canvas = document.getElementById("overlay");
-    const ctx = canvas.getContext("2d");
-    const status = document.getElementById("status");
-
-    /* ----- Camera Access ----- */
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        video.srcObject = stream;
-        status.textContent = "Starting camera…";
-    } catch (err) {
-        status.textContent = "Camera access denied.";
-        status.classList.remove("loading");
-        return;
-    }
-
-    /* ----- Load Object Detection Model ----- */
-    const model = await cocoSsd.load();
-    status.textContent = "Detecting…";
-
-    /* ----- Detection Loop ----- */
-    async function detect() {
-        const predictions = await model.detect(video);
-
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        let phoneDetected = false;
-
-        predictions.forEach(pred => {
-            if (pred.class === "cell phone" && pred.score > 0.5) {
-                phoneDetected = true;
-
-                // Draw sleek red outline
-                ctx.strokeStyle = "rgba(255, 59, 48, 0.9)";
-                ctx.lineWidth = 4;
-                ctx.strokeRect(...pred.bbox);
-
-                // Label
-                ctx.font = "20px -apple-system, Inter, sans-serif";
-                ctx.fillStyle = "rgba(255, 59, 48, 0.9)";
-                ctx.fillText(
-                    `Phone • ${Math.round(pred.score * 100)}%`,
-                    pred.bbox[0],
-                    pred.bbox[1] - 10
-                );
-            }
-        });
-
-        if (phoneDetected) {
-            status.textContent = "📱 Phone detected";
-            status.classList.add("detected");
-            status.classList.remove("loading");
-        } else {
-            status.textContent = "No phone detected";
-            status.classList.remove("detected");
-            status.classList.remove("loading");
-        }
-
-        requestAnimationFrame(detect);
-    }
-
-    detect();
-}
-
-startPhoneDetection();
-</script>
-
+<script src="script.js"></script>
 </body>
-</html>
