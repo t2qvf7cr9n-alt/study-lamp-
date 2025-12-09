@@ -1,4 +1,6 @@
-// Elements
+// =====================================================
+// ELEMENTS
+// =====================================================
 const taskInput = document.getElementById("taskInput");
 const addTaskBtn = document.getElementById("addTaskBtn");
 const taskList = document.getElementById("taskList");
@@ -9,10 +11,10 @@ let tasks = [];
 let currentAlert = false;
 let port, writer;
 
-// ---------------------------
-// TASK FUNCTIONS
-// ---------------------------
 
+// =====================================================
+// TASK FUNCTIONS
+// =====================================================
 function updateProgress() {
     if (tasks.length === 0) {
         progressBarFill.style.width = "0%";
@@ -27,7 +29,6 @@ function updateProgress() {
 
     progressBarFill.style.width = percent + "%";
     progressBarFill.textContent = percent + "%";
-
     lampFill.style.height = percent + "%";
 
     sendToLamp("P" + percent);
@@ -54,32 +55,4 @@ function renderTasks() {
         span.textContent = task.name;
 
         leftSide.appendChild(checkbox);
-        leftSide.appendChild(span);
-
-        const deleteBtn = document.createElement("button");
-        deleteBtn.className = "delete-btn";
-        deleteBtn.textContent = "Delete";
-
-        deleteBtn.addEventListener("click", () => {
-            tasks.splice(index, 1);
-            renderTasks();
-        });
-
-        li.appendChild(leftSide);
-        li.appendChild(deleteBtn);
-        taskList.appendChild(li);
-    });
-
-    updateProgress();
-}
-
-addTaskBtn.addEventListener("click", () => {
-    const text = taskInput.value.trim();
-    if (text === "") return;
-    tasks.push({ name: text, completed: false });
-    taskInput.value = "";
-    renderTasks();
-});
-
-taskInput.addEventListener("keypress", e => {
-    if (e.key === "Enter
+        leftSide.appendChil
