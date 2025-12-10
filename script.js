@@ -152,11 +152,16 @@ async function initPhoneDetection() {
     // Update status text
     document.getElementById("trackingStatus").textContent = "Tracking active";
 
-    // Initialize webcam
-    webcam = new tmImage.Webcam(300, 300, true); // width, height, flip
-    await webcam.setup(); // request permission
-    await webcam.play(); // start camera
+   // Initialize webcam
+console.log("Creating webcam...");
+webcam = new tmImage.Webcam(300, 300, true); // width, height, flip
+console.log("Requesting webcam access...");
+await webcam.setup(); // this should trigger the browser permission popup
+console.log("Webcam setup complete!");
+await webcam.play(); // start the video stream
 
+// ✅ Display webcam feed
+document.getElementById("webcam").srcObject = webcam.stream;
     // ✅ Display webcam feed
     document.getElementById("webcam").srcObject = webcam.stream;
 
