@@ -201,5 +201,6 @@ async function predictPhonePresence() {
 // ✅ Start tracking once everything is ready
 window.addEventListener("DOMContentLoaded", initPhoneDetection);
 
-  window.setDistracted = setDistracted;
+console.log("Preparing to start phone detection...");
+window.setDistracted = setDistracted;
 });
