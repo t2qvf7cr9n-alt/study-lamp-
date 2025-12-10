@@ -148,6 +148,23 @@ const metadataURL = "model/metadata.json";
 let tmModel, webcam;
 
 async function initPhoneDetection() {
+
+console.log("Preparing to start phone detection...");
+
+  // --- TEMP CAMERA TEST ---
+  console.log("🎥 Directly testing browser webcam...");
+  try {
+    const videoElement = document.getElementById("webcam");
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    videoElement.srcObject = stream;
+    console.log("✅ Camera stream attached directly to video element.");
+  } catch (err) {
+    console.error("❌ Camera access failed:", err);
+  }
+  // -------------------------
+
+  // Then continue with model load...
+  
   try {
     // Load the Teachable Machine model
     tmModel = await tmImage.load(modelURL, metadataURL);
