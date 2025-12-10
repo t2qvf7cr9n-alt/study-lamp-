@@ -1,8 +1,5 @@
 console.log("✅ script.js has loaded successfully!");
 
-window.addEventListener("load", async () => {
-  const tmImage = window.tmImage;
-
 // =====================================================
 // ELEMENTS
 // =====================================================
@@ -16,122 +13,118 @@ let tasks = [];
 let currentAlert = false;
 let port, writer;
 
-
 // =====================================================
 // TASK FUNCTIONS
 // =====================================================
 function updateProgress() {
-    if (tasks.length === 0) {
-        progressBarFill.style.width = "0%";
-        progressBarFill.textContent = "0%";
-        lampFill.style.height = "0%";
-        sendToLamp("P0");
-        return;
-    }
+  if (tasks.length === 0) {
+    progressBarFill.style.width = "0%";
+    progressBarFill.textContent = "0%";
+    lampFill.style.height = "0%";
+    sendToLamp("P0");
+    return;
+  }
 
-    const completed = tasks.filter(t => t.completed).length;
-    const percent = Math.round((completed / tasks.length) * 100);
+  const completed = tasks.filter(t => t.completed).length;
+  const percent = Math.round((completed / tasks.length) * 100);
 
-    progressBarFill.style.width = percent + "%";
-    progressBarFill.textContent = percent + "%";
-    lampFill.style.height = percent + "%";
+  progressBarFill.style.width = percent + "%";
+  progressBarFill.textContent = percent + "%";
+  lampFill.style.height = percent + "%";
 
-    sendToLamp("P" + percent);
+  sendToLamp("P" + percent);
 }
 
 function renderTasks() {
-    taskList.innerHTML = "";
+  taskList.innerHTML = "";
 
-    tasks.forEach((task, index) => {
-        const li = document.createElement("li");
-        li.className = "task-item";
+  tasks.forEach((task, index) => {
+    const li = document.createElement("li");
+    li.className = "task-item";
 
-        const leftSide = document.createElement("div");
-        leftSide.className = "task-left";
+    const leftSide = document.createElement("div");
+    leftSide.className = "task-left";
 
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.checked = task.completed;
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = task.completed;
 
-        checkbox.addEventListener("change", () => {
-            tasks[index].completed = checkbox.checked;
-            renderTasks();
-        });
-
-        const span = document.createElement("span");
-        span.textContent = task.name;
-
-        leftSide.appendChild(checkbox);
-        leftSide.appendChild(span);
-
-        const deleteBtn = document.createElement("button");
-        deleteBtn.className = "delete-btn";
-        deleteBtn.textContent = "Delete";
-
-        deleteBtn.addEventListener("click", () => {
-            tasks.splice(index, 1);
-            renderTasks();
-        });
-
-        li.appendChild(leftSide);
-        li.appendChild(deleteBtn);
-        taskList.appendChild(li);
+    checkbox.addEventListener("change", () => {
+      tasks[index].completed = checkbox.checked;
+      renderTasks();
     });
 
-    updateProgress();
+    const span = document.createElement("span");
+    span.textContent = task.name;
+
+    leftSide.appendChild(checkbox);
+    leftSide.appendChild(span);
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.className = "delete-btn";
+    deleteBtn.textContent = "Delete";
+
+    deleteBtn.addEventListener("click", () => {
+      tasks.splice(index, 1);
+      renderTasks();
+    });
+
+    li.appendChild(leftSide);
+    li.appendChild(deleteBtn);
+    taskList.appendChild(li);
+  });
+
+  updateProgress();
 }
 
 addTaskBtn.addEventListener("click", () => {
-    const text = taskInput.value.trim();
-    if (text === "") return;
-    tasks.push({ name: text, completed: false });
-    taskInput.value = "";
-    renderTasks();
+  const text = taskInput.value.trim();
+  if (text === "") return;
+  tasks.push({ name: text, completed: false });
+  taskInput.value = "";
+  renderTasks();
 });
 
 taskInput.addEventListener("keypress", e => {
-    if (e.key === "Enter") addTaskBtn.click();
+  if (e.key === "Enter") addTaskBtn.click();
 });
 
 renderTasks();
-
 
 // =====================================================
 // DISTRACTION HOOK
 // =====================================================
 function setDistracted(isDistracted) {
-    currentAlert = isDistracted;
+  currentAlert = isDistracted;
 
-    if (isDistracted) {
-        document.body.classList.add("distracted");
-        lampFill.style.background = "#ff3b30";
-        sendToLamp("A1");
-    } else {
-        document.body.classList.remove("distracted");
-        lampFill.style.background = "#30d158";
-        sendToLamp("A0");
-    }
+  if (isDistracted) {
+    document.body.classList.add("distracted");
+    lampFill.style.background = "#ff3b30";
+    sendToLamp("A1");
+  } else {
+    document.body.classList.remove("distracted");
+    lampFill.style.background = "#30d158";
+    sendToLamp("A0");
+  }
 }
-
 
 // =====================================================
 // LAMP USB SERIAL CONNECTION
 // =====================================================
 async function connectLamp() {
-    try {
-        port = await navigator.serial.requestPort();
-        await port.open({ baudRate: 9600 });
-        writer = port.writable.getWriter();
-
-        document.getElementById("lampStatus").textContent = "Connected";
-    } catch (err) {
-        console.error("Lamp connection failed:", err);
-    }
+  try {
+    port = await navigator.serial.requestPort();
+    await port.open({ baudRate: 9600 });
+    writer = port.writable.getWriter();
+    document.getElementById("lampStatus").textContent = "Connected";
+  } catch (err) {
+    console.error("Lamp connection failed:", err);
+  }
 }
 
 async function sendToLamp(message) {
-    if (!writer) return;
-    await writer.write(new TextEncoder().encode(message + "\n"));
+  if (!writer) return;
+  await writer.write(new TextEncoder().encode(message + "\n"));
 }
 
 document.getElementById("connectLampBtn").onclick = connectLamp;
@@ -171,19 +164,10 @@ async function initPhoneDetection() {
   } catch (err) {
     console.error("❌ Model failed to load:", err);
   }
-} // <— you were missing this closing brace
+}
 
 // ===========================================================
 // AUTO-START WHEN PAGE LOADS
 // ===========================================================
 window.addEventListener("DOMContentLoaded", initPhoneDetection);
-
-
-
-// ✅ Start tracking once everything is ready
-window.addEventListener("DOMContentLoaded", initPhoneDetection);
-
-console.log("Preparing to start phone detection...");
 window.setDistracted = setDistracted;
-});
-initPhoneDetection();
