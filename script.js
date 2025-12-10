@@ -138,57 +138,61 @@ document.getElementById("connectLampBtn").onclick = connectLamp;
 // ===========================================================
 // PHONE DETECTION MODEL (Teachable Machine)
 // ===========================================================
-const modelURL = "./model/model.json";
-const metadataURL = "./model/metadata.json";
-
-
+const modelURL = "model/model.json";
+const metadataURL = "model/metadata.json";
 
 let tmModel, webcam;
 
 async function initPhoneDetection() {
-    try {
-        tmModel = await tmImage.load(modelURL, metadataURL);
-        console.log("Model loaded!");
+  try {
+    // Load the Teachable Machine model
+    tmModel = await tmImage.load(modelURL, metadataURL);
+    console.log("Model loaded!");
 
-        document.getElementById("trackingStatus").textContent = "Tracking active";
+    // Update status text
+    document.getElementById("trackingStatus").textContent = "Tracking active";
 
-        webcam = new tmImage.Webcam(300, 300, true);
-        await webcam.setup();
-        await webcam.play();
+    // Initialize webcam
+    webcam = new tmImage.Webcam(300, 300, true); // width, height, flip
+    await webcam.setup(); // request permission
+    await webcam.play(); // start camera
 
-        document.getElementById("webcam").srcObject = webcam.stream;
-      
-        window.requestAnimationFrame(detectionLoop);
+    // ✅ Display webcam feed
+    document.getElementById("webcam").srcObject = webcam.stream;
 
-    } catch (err) {
-        console.error("Model failed to load:", err);
-        document.getElementById("trackingStatus").textContent = "Model failed to load";
-    }
+    // ✅ Start detection loop
+    window.requestAnimationFrame(detectionLoop);
+
+  } catch (err) {
+    console.error("Model or webcam failed to load:", err);
+    document.getElementById("trackingStatus").textContent = "Tracking error";
+  }
 }
 
 async function detectionLoop() {
-    webcam.update();
-    await predictPhonePresence();
-    window.requestAnimationFrame(detectionLoop);
+  webcam.update(); // get new frame
+  await predictPhonePresence();
+  window.requestAnimationFrame(detectionLoop);
 }
 
 async function predictPhonePresence() {
-    if (!tmModel) return;
+  if (!tmModel) return;
 
-    const predictions = await tmModel.predict(webcam.canvas);
-    const holdingPhoneProb = predictions[0].probability;
+  const predictions = await tmModel.predict(webcam.canvas);
+  const holdingPhoneProb = predictions[0].probability;
+  const textBox = document.getElementById("predictionText");
 
-    const textBox = document.getElementById("predictionText");
-
-    if (holdingPhoneProb > 0.85) {
-        textBox.textContent = "📱 Phone detected!";
-        setDistracted(true);
-    } else {
-        textBox.textContent = "✔ No phone detected";
-        setDistracted(false);
-    }
+  if (holdingPhoneProb > 0.85) {
+    textBox.textContent = "📱 Phone detected!";
+    setDistracted(true);
+  } else {
+    textBox.textContent = "✔ No phone detected";
+    setDistracted(false);
+  }
 }
 
+// ✅ Start tracking once everything is ready
 window.addEventListener("DOMContentLoaded", initPhoneDetection);
+
   window.setDistracted = setDistracted;
 });
