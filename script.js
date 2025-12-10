@@ -1,4 +1,6 @@
 console.log("✅ script.js has loaded successfully!");
+const tmImage = window.tmImage;
+
 
 // =====================================================
 // ELEMENTS
