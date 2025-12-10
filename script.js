@@ -156,8 +156,8 @@ async function initPhoneDetection() {
         await webcam.setup();
         await webcam.play();
 
-        document.getElementById("webcam").srcObject = webcam.webcam;
-
+        document.getElementById("webcam").srcObject = webcam.stream;
+      
         window.requestAnimationFrame(detectionLoop);
 
     } catch (err) {
