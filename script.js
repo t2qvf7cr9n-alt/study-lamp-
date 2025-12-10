@@ -1,3 +1,5 @@
+console.log("✅ script.js has loaded successfully!");
+
 window.addEventListener("load", async () => {
   const tmImage = window.tmImage;
 
