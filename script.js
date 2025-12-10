@@ -192,4 +192,5 @@ async function predictPhonePresence() {
 }
 
 window.addEventListener("DOMContentLoaded", initPhoneDetection);
+  window.setDistracted = setDistracted;
 });
