@@ -1,8 +1,6 @@
 window.addEventListener("load", async () => {
   const tmImage = window.tmImage;
 
-const tmImage = window.tmImage;
-
 // =====================================================
 // ELEMENTS
 // =====================================================
