@@ -223,3 +223,4 @@ window.addEventListener("DOMContentLoaded", initPhoneDetection);
 console.log("Preparing to start phone detection...");
 window.setDistracted = setDistracted;
 });
+initPhoneDetection();
