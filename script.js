@@ -140,6 +140,8 @@ document.getElementById("connectLampBtn").onclick = connectLamp;
 // ===========================================================
 // PHONE DETECTION MODEL (Teachable Machine)
 // ===========================================================
+  console.log("📱 Reached phone detection section");
+
 const modelURL = "model/model.json";
 const metadataURL = "model/metadata.json";
 
