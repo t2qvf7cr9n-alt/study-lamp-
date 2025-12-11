@@ -1,6 +1,6 @@
 console.log("✅ script.js has loaded successfully!");
-const tmImage = window.tmImage;
 
+let tmImage = window.tmImage;
 
 // =====================================================
 // ELEMENTS
@@ -13,7 +13,13 @@ const lampFill = document.getElementById("lampFill");
 
 let tasks = [];
 let currentAlert = false;
-let port, writer;
+
+// =====================================================
+// BLUETOOTH VARIABLES
+// =====================================================
+let bluetoothDevice;
+let bluetoothCharacteristic;
+
 
 // =====================================================
 // TASK FUNCTIONS
@@ -34,7 +40,7 @@ function updateProgress() {
   progressBarFill.textContent = percent + "%";
   lampFill.style.height = percent + "%";
 
-  sendToLamp("P" + percent);
+  sendToLamp("P" + percent);  
 }
 
 function renderTasks() {
@@ -65,7 +71,6 @@ function renderTasks() {
     const deleteBtn = document.createElement("button");
     deleteBtn.className = "delete-btn";
     deleteBtn.textContent = "Delete";
-
     deleteBtn.addEventListener("click", () => {
       tasks.splice(index, 1);
       renderTasks();
@@ -93,6 +98,7 @@ taskInput.addEventListener("keypress", e => {
 
 renderTasks();
 
+
 // =====================================================
 // DISTRACTION HOOK
 // =====================================================
@@ -110,29 +116,48 @@ function setDistracted(isDistracted) {
   }
 }
 
+window.setDistracted = setDistracted;
+
+
 // =====================================================
-// LAMP USB SERIAL CONNECTION
+// BLUETOOTH CONNECTION (REPLACES USB SERIAL)
 // =====================================================
 async function connectLamp() {
   try {
-    port = await navigator.serial.requestPort();
-    await port.open({ baudRate: 9600 });
-    writer = port.writable.getWriter();
-    document.getElementById("lampStatus").textContent = "Connected";
-  } catch (err) {
-    console.error("Lamp connection failed:", err);
+    console.log("🔵 Requesting Bluetooth Device...");
+
+    bluetoothDevice = await navigator.bluetooth.requestDevice({
+      acceptAllDevices: true,
+      optionalServices: ["0000ffe0-0000-1000-8000-00805f9b34fb"]
+    });
+
+    console.log("🔵 Connecting...");
+    const server = await bluetoothDevice.gatt.connect();
+
+    const service = await server.getPrimaryService("0000ffe0-0000-1000-8000-00805f9b34fb");
+    bluetoothCharacteristic = await service.getCharacteristic("0000ffe1-0000-1000-8000-00805f9b34fb");
+
+    document.getElementById("lampStatus").textContent = "Connected via Bluetooth";
+    console.log("✅ Bluetooth connected!");
+
+  } catch (error) {
+    console.error("❌ Bluetooth connection failed:", error);
   }
 }
 
 async function sendToLamp(message) {
-  if (!writer) return;
-  await writer.write(new TextEncoder().encode(message + "\n"));
+  if (!bluetoothCharacteristic) return;
+
+  let encoder = new TextEncoder();
+  await bluetoothCharacteristic.writeValue(encoder.encode(message));
+  console.log("📤 Sent to lamp:", message);
 }
 
 document.getElementById("connectLampBtn").onclick = connectLamp;
 
+
 // ===========================================================
-// PHONE DETECTION MODEL (Teachable Machine)
+// PHONE DETECTION MODEL
 // ===========================================================
 console.log("📱 Reached phone detection section");
 
@@ -141,35 +166,43 @@ const metadataURL = "model/metadata.json";
 
 let tmModel, webcam;
 
+
 // ===========================================================
 // MAIN FUNCTION
 // ===========================================================
 async function initPhoneDetection() {
   console.log("Preparing to start phone detection...");
 
-  // --- TEMP CAMERA TEST ---
-  console.log("🎥 Directly testing browser webcam...");
-  try {
-    const videoElement = document.getElementById("webcam");
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-    videoElement.srcObject = stream;
-    console.log("✅ Camera stream attached directly to video element.");
-  } catch (err) {
-    console.error("❌ Camera access failed:", err);
+  // Load model library
+  if (!window.tmImage) {
+    console.error("❌ tmImage library missing.");
+    return;
+  } else {
+    tmImage = window.tmImage;
   }
 
-  // --- LOAD MODEL ---
+  // TEMP CAMERA TEST
+  try {
+    console.log("🎥 Testing webcam...");
+    const video = document.getElementById("webcam");
+    video.srcObject = await navigator.mediaDevices.getUserMedia({ video: true });
+    console.log("✅ Webcam working");
+  } catch (err) {
+    console.error("❌ Webcam failed:", err);
+  }
+
+  // Load model
   try {
     tmModel = await tmImage.load(modelURL, metadataURL);
-    console.log("✅ Model loaded!");
-    document.getElementById("trackingStatus").textContent = "Tracking active";
+    document.getElementById("trackingStatus").textContent = "Tracking Active";
+    console.log("✅ Model loaded");
   } catch (err) {
     console.error("❌ Model failed to load:", err);
   }
 }
 
+
 // ===========================================================
-// AUTO-START WHEN PAGE LOADS
+// AUTO-START
 // ===========================================================
 window.addEventListener("DOMContentLoaded", initPhoneDetection);
-window.setDistracted = setDistracted;
